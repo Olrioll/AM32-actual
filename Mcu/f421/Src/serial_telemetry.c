@@ -20,9 +20,9 @@ void send_telem_DMA(uint8_t bytes)
     }
 #else
     /* set data length and enable channel to start transfer for USART1 */
-    DMA1_CHANNEL2->ctrl_bit.chen = FALSE;
-    DMA1_CHANNEL2->dtcnt = bytes;
-    DMA1_CHANNEL2->ctrl_bit.chen = TRUE;
+    DMA1_CHANNEL4->ctrl_bit.chen = FALSE;
+    DMA1_CHANNEL4->dtcnt = bytes;
+    DMA1_CHANNEL4->ctrl_bit.chen = TRUE;
 #endif
 }
 
@@ -40,7 +40,8 @@ void telem_UART_Init(void)
     gpio_init_struct.gpio_out_type = GPIO_OUTPUT_PUSH_PULL;
     gpio_init_struct.gpio_mode = GPIO_MODE_MUX;
     gpio_init_struct.gpio_pins = GPIO_PINS_14;
-    gpio_init_struct.gpio_pull = GPIO_PULL_UP;
+    /* use floating configuration for single wire output */
+    gpio_init_struct.gpio_pull = GPIO_PULL_NONE;
     gpio_init(GPIOA, &gpio_init_struct);
     gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE14, GPIO_MUX_1);
 
@@ -64,7 +65,10 @@ void telem_UART_Init(void)
     gpio_init(GPIOB, &gpio_init_struct);
     gpio_pin_mux_config(GPIOB, GPIO_PINS_SOURCE6, GPIO_MUX_0);
 
-    dma_reset(DMA1_CHANNEL2);
+    /* remap USART1 TX to DMA channel 4 to avoid conflicts */
+    scfg_usart1_tx_dma_channel_remap(SCFG_USART1_TX_TO_DMA_CHANNEL_4);
+
+    dma_reset(DMA1_CHANNEL4);
 
     dma_init_type dma_init_struct;
     dma_default_para_init(&dma_init_struct);
@@ -78,7 +82,7 @@ void telem_UART_Init(void)
     dma_init_struct.peripheral_inc_enable = FALSE;
     dma_init_struct.priority = DMA_PRIORITY_LOW;
     dma_init_struct.loop_mode_enable = FALSE;
-    dma_init(DMA1_CHANNEL2, &dma_init_struct);
+    dma_init(DMA1_CHANNEL4, &dma_init_struct);
 
     /* configure USART1 */
     usart_init(USART1, 115200, USART_DATA_8BITS, USART_STOP_1_BIT);
