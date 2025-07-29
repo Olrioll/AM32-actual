@@ -136,13 +136,13 @@ void DMA1_Channel4_5_IRQHandler(void)
         LL_DMA_ClearFlag_GI5(DMA1);
     }
 #ifdef USE_PA14_TELEMETRY
-    if (LL_DMA_IsActiveFlag_TC4(DMA1)) {
-        LL_DMA_ClearFlag_GI4(DMA1);
-        LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_4);
+    if (LL_DMA_IsActiveFlag_TC7(DMA1)) {
+        LL_DMA_ClearFlag_GI7(DMA1);
+        LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_7);
         /* Call function Transmission complete Callback */
-    } else if (LL_DMA_IsActiveFlag_TE4(DMA1)) {
-        LL_DMA_ClearFlag_GI4(DMA1);
-        LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_4);
+    } else if (LL_DMA_IsActiveFlag_TE7(DMA1)) {
+        LL_DMA_ClearFlag_GI7(DMA1);
+        LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_7);
         /* Call Error function */
         // USART_TransferError_Callback();
     }
