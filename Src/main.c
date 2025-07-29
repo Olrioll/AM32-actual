@@ -1627,18 +1627,18 @@ static void checkDeviceInfo(void)
 #define DEVINFO_MAGIC1 0x5925e3da
 #define DEVINFO_MAGIC2 0x4eb863d9
 
-    const struct devinfo {
-        uint32_t magic1;
-        uint32_t magic2;
-        const uint8_t deviceInfo[9];
-    } *devinfo = (struct devinfo *)(0x1000 - 32);
-    if (devinfo->magic1 != DEVINFO_MAGIC1 ||
-        devinfo->magic2 != DEVINFO_MAGIC2) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+    uint32_t magic1 = *(volatile const uint32_t *)(uintptr_t)(0x1000 - 32);
+    uint32_t magic2 = *(volatile const uint32_t *)(uintptr_t)(0x1000 - 28);
+    if (magic1 != DEVINFO_MAGIC1 || magic2 != DEVINFO_MAGIC2) {
         // bootloader does not support this feature, nothing to do
         return;
     }
     // change eeprom_address based on the code in the bootloaders device info
-    switch (devinfo->deviceInfo[4]) {
+    uint8_t info_byte = *(volatile const uint8_t *)(uintptr_t)(0x1000 - 32 + 12);
+#pragma GCC diagnostic pop
+    switch (info_byte) {
         case 0x1f:
             eeprom_address = 0x08007c00;
             break;
