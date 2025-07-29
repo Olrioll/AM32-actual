@@ -40,7 +40,8 @@ void telem_UART_Init(void)
     gpio_init_struct.gpio_out_type = GPIO_OUTPUT_PUSH_PULL;
     gpio_init_struct.gpio_mode = GPIO_MODE_MUX;
     gpio_init_struct.gpio_pins = GPIO_PINS_14;
-    gpio_init_struct.gpio_pull = GPIO_PULL_UP;
+    /* use floating configuration for single wire output */
+    gpio_init_struct.gpio_pull = GPIO_PULL_NONE;
     gpio_init(GPIOA, &gpio_init_struct);
     gpio_pin_mux_config(GPIOA, GPIO_PINS_SOURCE14, GPIO_MUX_1);
 
