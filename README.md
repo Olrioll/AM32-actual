@@ -42,6 +42,9 @@ AM32 currently has support for STSPIN32F0, STM32F051, STM32G071, GD32E230, AT32F
 The CKS32F051 is not recommended due to too many random issues.
 Target compatibility List can be found [here](https://github.com/am32-firmware/AM32/blob/main/Inc/targets.h)
 
+For the AT32DEV_F421 board telemetry is normally transmitted on PB6 via USART1.
+Defining `USE_PA14_TELEMETRY` routes telemetry to PA14 using USART2.
+
 
 ## Installation & Bootloader
 
